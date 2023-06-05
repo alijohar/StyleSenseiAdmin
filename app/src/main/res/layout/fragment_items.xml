@@ -5,9 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.fragments.ItemsFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
+        tools:listitem="@layout/item"
         android:layout_height="match_parent"
-        android:text="Hello" />
-
+        android:layout_margin="@dimen/normal_magrin"
+        />
 </FrameLayout>
