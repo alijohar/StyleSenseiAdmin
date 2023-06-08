@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.fragments.ItemsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        tools:listitem="@layout/item"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/normal_magrin"
-        />
+        android:verticalSpacing="16dp"
+        android:horizontalSpacing="8dp"
+        android:numColumns="@integer/num_columns" />
 </FrameLayout>

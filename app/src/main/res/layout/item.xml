@@ -9,47 +9,43 @@
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="@dimen/normal_magrin"
-        android:orientation="vertical">
+        android:gravity="center">
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            app:cardElevation="0dp"
+            android:id="@+id/cardView"
+            app:cardCornerRadius="8dp"
+            >
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/grid_image"/>
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/item_image"
-            android:layout_gravity="center"
-            android:maxWidth="270dp"
-            android:layout_margin="@dimen/normal_magrin"
-            app:riv_corner_radius="12dp"
-            android:layout_height="wrap_content"
-            app:loadImage="@{item}"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"  
-            android:layout_width="wrap_content"/>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/normal_magrin">
-
-
-            <TextView
-                android:id="@+id/item_name"
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/selected_img"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/normal_magrin"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="@{item.name}"
-                android:textStyle="bold"
-                android:paddingRight="@dimen/normal_magrin"
-                android:paddingLeft="@dimen/normal_magrin"
-                 />
+                android:src="@drawable/round_check_circle_24"/>
+        </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_name"
+            android:visibility="gone"
+            android:text="Rose"
+            android:textSize="26sp"
+            android:layout_marginTop="6dp"/>
 
     </LinearLayout>
+
 </layout>
