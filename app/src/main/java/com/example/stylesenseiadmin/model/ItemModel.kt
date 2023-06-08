@@ -3,7 +3,7 @@ package com.example.stylesenseiadmin.model
 data class ItemModel(
     val count: Int,
     val count_all: Int,
-    val itemResults: List<ItemResults>
+    val result: List<ItemResults>
 )
 
 data class ProductAttribute(
@@ -23,7 +23,7 @@ data class ItemResults(
     val name: String,
     val price: String,
     val product_attributes: List<ProductAttribute>,
-    val resource: Any,
+    val resource: String?,
     val resource_id: Int,
     val type: Int
 )

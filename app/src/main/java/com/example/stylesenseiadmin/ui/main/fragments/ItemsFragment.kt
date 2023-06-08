@@ -24,7 +24,9 @@ class ItemsFragment : Fragment() {
 
 
         viewModel.results.observe(viewLifecycleOwner){
-            Log.i("AJC", it.size.toString())
+            for (item in it) {
+                Log.i("AJC", item.name)
+            }
         }
 
         return binding.root
