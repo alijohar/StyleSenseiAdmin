@@ -33,6 +33,27 @@
                 android:padding="@dimen/normal_magrin"
                 android:layout_height="wrap_content"
                 android:src="@drawable/round_check_circle_24"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badge"
+                android:layout_width="24dp"
+                android:layout_margin="@dimen/normal_magrin"
+                app:cardBackgroundColor="@color/design_default_color_error"
+                android:layout_gravity="right"
+                app:cardCornerRadius="100dp"
+                android:visibility="gone"
+                android:layout_height="24dp"
+                >
+                <TextView
+                    android:id="@+id/badge_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+            </com.google.android.material.card.MaterialCardView>
         </com.google.android.material.card.MaterialCardView>
 
 

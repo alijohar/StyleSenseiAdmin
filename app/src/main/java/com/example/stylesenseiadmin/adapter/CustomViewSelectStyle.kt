@@ -15,13 +15,19 @@ import com.google.android.material.card.MaterialCardView
 
 internal class CustomViewSelectStyle(context: Context?) : FrameLayout(context!!) {
     var textView: TextView
+    var badgeCount: TextView
     var imageView: ImageView
     var selectedImage: ImageView
     var cardView: MaterialCardView
+    var badge: MaterialCardView
 
     fun display(src: ItemResults, isSelected: Boolean) {
         textView.text = src.name
         Glide.with(context).load(src.images.split(",").first()).into(imageView)
+        if (src.added_attr_count>0){
+            badge.visibility = View.VISIBLE
+            badgeCount.text = src.added_attr_count.toString()
+        }
         display(isSelected)
     }
 
@@ -55,5 +61,7 @@ internal class CustomViewSelectStyle(context: Context?) : FrameLayout(context!!)
         imageView = rootView.findViewById<View>(R.id.grid_image) as ImageView
         selectedImage = rootView.findViewById<View>(R.id.selected_img) as ImageView
         cardView = rootView.findViewById<View>(R.id.cardView) as MaterialCardView
+        badge = rootView.findViewById<View>(R.id.badge) as MaterialCardView
+        badgeCount = rootView.findViewById<View>(R.id.badge_count) as TextView
     }
 }
