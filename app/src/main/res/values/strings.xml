@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">StyleSenseiAdmin</string>
+    <string name="retry">retry</string>
+    <string name="wait">please wait ... </string>
 </resources>

@@ -15,7 +15,7 @@ class ApiHelper {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun getItem(array: MutableLiveData<List<ItemResults>>){
+    fun getItem(array: MutableLiveData<List<ItemResults>>, fail: MutableLiveData<String>){
         val mediaType = "text/plain".toMediaType()
         val requestBody = "{\n    \"type\": 0,\n    \"limit\": 100\n}".toRequestBody(mediaType)
         val deferredList = OnlineItem.retrofitService.getItem(requestBody)
@@ -29,7 +29,7 @@ class ApiHelper {
                     // Handle the situation where 'result' or 'resource' is null
                 }
             } catch (e: Exception) {
-                Log.i("AJC2", e.message.toString())
+               fail.value = e.message.toString()
             }
         }
     }}

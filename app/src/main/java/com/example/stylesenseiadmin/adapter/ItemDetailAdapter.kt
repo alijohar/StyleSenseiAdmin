@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.example.stylesenseiadmin.model.ItemResults
 
-class StyleCategoryGridAdapter(private val context: Context, private val itemResult: ArrayList<ItemResults>) :
+class ItemDetailAdapter(private val context: Context, private val itemResult: ArrayList<String>) :
     BaseAdapter() {
-    var selectedPositions: ArrayList<Int> = ArrayList()
-    var inflater: LayoutInflater? = null
     override fun getCount(): Int {
         return itemResult.size
     }
@@ -25,9 +23,8 @@ class StyleCategoryGridAdapter(private val context: Context, private val itemRes
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val customView =
-            if (convertView == null) CustomViewSelectStyle(context) else (convertView as CustomViewSelectStyle?)!!
-        customView.display(itemResult[position], selectedPositions.contains(position))
+            if (convertView == null) ItemDetailCustomView(context) else (convertView as ItemDetailCustomView?)!!
+        customView.display(itemResult[position])
         return customView
     }
-
 }

@@ -13,7 +13,7 @@ import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.model.ItemResults
 import com.google.android.material.card.MaterialCardView
 
-internal class CustomViewSelectStyle(context: Context?) : FrameLayout(context!!) {
+internal class ItemCustomView(context: Context?) : FrameLayout(context!!) {
     var textView: TextView
     var badgeCount: TextView
     var imageView: ImageView
@@ -27,6 +27,8 @@ internal class CustomViewSelectStyle(context: Context?) : FrameLayout(context!!)
         if (src.added_attr_count>0){
             badge.visibility = View.VISIBLE
             badgeCount.text = src.added_attr_count.toString()
+        }else{
+            badge.visibility = View.GONE
         }
         display(isSelected)
     }

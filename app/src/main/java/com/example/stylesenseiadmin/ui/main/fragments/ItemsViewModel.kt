@@ -14,12 +14,16 @@ class ItemsViewModel : ViewModel() {
     val _results = MutableLiveData<List<ItemResults>>()
     val results: LiveData<List<ItemResults>>
         get() = _results
+
+    val _fail = MutableLiveData<String>()
+    val fail: LiveData<String>
+        get() = _fail
     init {
         getOnlineItems()
     }
 
-    private fun getOnlineItems() {
-        apiHelper.getItem(_results)
+    fun getOnlineItems() {
+        apiHelper.getItem(_results, _fail)
     }
 
     companion object{
