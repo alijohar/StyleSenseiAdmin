@@ -2,4 +2,8 @@
     <string name="app_name">StyleSenseiAdmin</string>
     <string name="retry">retry</string>
     <string name="wait">please wait ... </string>
+    <string name="add_key">Add key</string>
+    <string name="add_value">Add value</string>
+    <string name="submit">Submit</string>
+    <string name="selected">"Selected ids is: "</string>
 </resources>

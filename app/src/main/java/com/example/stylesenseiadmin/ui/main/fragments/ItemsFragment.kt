@@ -2,7 +2,6 @@ package com.example.stylesenseiadmin.ui.main.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
-
+    private lateinit var adapter: ItemAdapter
     private lateinit var viewModel: ItemsViewModel
     private lateinit var binding: FragmentItemsBinding
     private lateinit var itemResults: List<ItemResults>
@@ -42,8 +41,46 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         viewModel.fail.observe(viewLifecycleOwner) {
             handleFail(it)
         }
+        viewModel.addAttrResult.observe(viewLifecycleOwner) {
+            binding.attrSheet.sendingCountainer.visibility = View.VISIBLE
+            binding.attrSheet.doneTitle.text = it
+        }
+        binding.retry.setOnClickListener {
+            retry()
+        }
 
+
+
+        binding.addAttr.setOnClickListener {
+            val selected = adapter.selectedPositions
+            openAttrSheet(selected)
+
+        }
         return binding.root
+    }
+
+    private fun openAttrSheet(selected: ArrayList<Int>) {
+        handleAttrSheet()
+        val array = ArrayList<Int>()
+        for (item in selected){
+            array.add(itemResults[item].id)
+        }
+        handleDes(array)
+
+        binding.bg.visibility = View.VISIBLE;
+        binding.bg.alpha = 0.3F
+        sheetBehavior?.peekHeight = 440
+        sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.bg.setOnClickListener {
+            sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.bg.visibility = View.GONE
+        }
+
+        binding.attrSheet.submit.setOnClickListener {
+            if (binding.attrSheet.key.text!!.isNotEmpty() && binding.attrSheet.value.text!!.isNotEmpty()){
+                viewModel.addAttr(array, binding.attrSheet.key.text.toString(), binding.attrSheet.value.text.toString())
+            }
+        }
     }
 
     private fun handleFail(it: String?) {
@@ -52,9 +89,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.titleLoading.setTextColor(redColor)
         binding.titleLoading.text = it
         binding.retry.visibility = View.VISIBLE
-        binding.retry.setOnClickListener {
-            retry()
-        }
+
     }
 
     private fun retry() {
@@ -70,19 +105,24 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             this.itemResults = it
         }
         binding.progress.visibility = View.GONE
-        val gridAdapter = ItemAdapter(requireContext(), it as ArrayList<ItemResults>)
+        adapter = ItemAdapter(requireContext(), it as ArrayList<ItemResults>)
         binding.gridView.onItemLongClickListener = this
-        binding.gridView.adapter = gridAdapter
+        binding.gridView.adapter = adapter
         binding.gridView.onItemClickListener =
             AdapterView.OnItemClickListener { _, view, position, _ ->
-                val selectedIndex: Int = gridAdapter.selectedPositions.indexOf(position)
+
+                val selectedIndex: Int = adapter.selectedPositions.indexOf(position)
                 if (selectedIndex > -1) {
-                    gridAdapter.selectedPositions.remove(position)
+                    adapter.selectedPositions.remove(position)
                     (view as ItemCustomView).display(false)
                 } else {
-
-                    gridAdapter.selectedPositions.add(position)
+                    adapter.selectedPositions.add(position)
                     (view as ItemCustomView).display(true)
+                }
+                if (adapter.selectedPositions.isNotEmpty()){
+                    binding.addAttr.visibility = View.VISIBLE
+                }else{
+                    binding.addAttr.visibility = View.GONE
                 }
 
             }
@@ -119,6 +159,16 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.sheet.gridView.adapter = gridAdapter
     }
 
+    private fun handleDes(selected: ArrayList<Int>) {
+        binding.attrSheet.title.text = String.format(
+            Locale.getDefault(),
+            "%s (%s)",
+            requireContext().resources.getString(R.string.selected),
+            selected.joinToString()
+        )
+    }
+
+
     private fun handleDes(item: ItemResults) {
         binding.sheet.title.text = String.format(
             Locale.getDefault(),
@@ -134,6 +184,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private fun handleStyleSheet(p2: Int) {
         sheetBehavior = BottomSheetBehavior.from(binding.sheet.bottomSheet)
     }
-
+    private fun handleAttrSheet() {
+        sheetBehavior = BottomSheetBehavior.from(binding.attrSheet.bottomSheet)
+    }
 
 }

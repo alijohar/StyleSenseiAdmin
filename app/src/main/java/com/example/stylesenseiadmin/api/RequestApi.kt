@@ -9,4 +9,7 @@ import retrofit2.http.POST
 interface RequestApi {
     @POST("/api/v1/product/")
     fun getItem(@Body body: RequestBody):Deferred<ItemModel>
+
+    @POST("/api/v1/product/add-attr")
+    fun addAttr(@Body body: RequestBody):Deferred<String>
 }

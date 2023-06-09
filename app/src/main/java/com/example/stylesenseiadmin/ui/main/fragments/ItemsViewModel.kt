@@ -18,12 +18,20 @@ class ItemsViewModel : ViewModel() {
     val _fail = MutableLiveData<String>()
     val fail: LiveData<String>
         get() = _fail
+
+    val _addAttrResult = MutableLiveData<String>()
+    val addAttrResult: LiveData<String>
+        get() = _addAttrResult
     init {
         getOnlineItems()
     }
 
     fun getOnlineItems() {
         apiHelper.getItem(_results, _fail)
+    }
+
+    fun addAttr(ids:ArrayList<Int>, key:String, value:String){
+        apiHelper.addAttr(_addAttrResult, key, value, ids)
     }
 
     companion object{

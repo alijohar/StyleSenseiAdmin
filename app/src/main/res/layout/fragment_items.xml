@@ -62,4 +62,17 @@
 
     <include layout="@layout/bottom_sheet"
         android:id="@+id/sheet"/>
+    <include layout="@layout/attr_sheet"
+        android:id="@+id/attr_sheet"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/add_attr"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/normal_magrin"
+        android:src="@drawable/round_add_24"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:elevation="0dp"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
