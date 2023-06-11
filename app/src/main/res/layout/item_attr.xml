@@ -8,9 +8,9 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
+        android:padding="@dimen/small_magrin"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:padding="8dp" />
+        />
 
     <!-- Add any other views you need for each item -->
 
