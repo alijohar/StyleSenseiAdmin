@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.AdapterView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.adapter.ItemCustomView
@@ -44,14 +41,17 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         viewModel.attrs.observe(viewLifecycleOwner) {
             if (it != null){
                 binding.filter.visibility = View.VISIBLE
+                binding.filter.setOnClickListener {
+                    openAttrsSheet()
+                }
                 attrs = it
             }else {
                 binding.filter.visibility = View.GONE
             }
         }
         viewModel.addAttrResult.observe(viewLifecycleOwner) {
-            binding.attrSheet.sendingCountainer.visibility = View.VISIBLE
-            binding.attrSheet.doneTitle.text = it
+            binding.addAttrSheet.sendingCountainer.visibility = View.VISIBLE
+            binding.addAttrSheet.doneTitle.text = it
         }
         binding.retry.setOnClickListener {
             retry()
@@ -61,7 +61,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
         binding.addAttr.setOnClickListener {
             val selected = adapter.selectedPositions
-            openAttrSheet(selected)
+            openAddAttrSheet(selected)
 
         }
 
@@ -69,8 +69,20 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         return binding.root
     }
 
-    private fun openAttrSheet(selected: ArrayList<Int>) {
+    private fun openAttrsSheet() {
         handleAttrSheet()
+        binding.bg.visibility = View.VISIBLE;
+        binding.bg.alpha = 0.3F
+        sheetBehavior?.peekHeight = 440
+        sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.bg.setOnClickListener {
+            sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.bg.visibility = View.GONE
+        }
+    }
+
+    private fun openAddAttrSheet(selected: ArrayList<Int>) {
+        handleAddAttrSheet()
         val array = ArrayList<Int>()
         for (item in selected){
             array.add(itemResults[item].id)
@@ -86,9 +98,9 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             binding.bg.visibility = View.GONE
         }
 
-        binding.attrSheet.submit.setOnClickListener {
-            if (binding.attrSheet.key.text!!.isNotEmpty() && binding.attrSheet.value.text!!.isNotEmpty()){
-                viewModel.addAttr(array, binding.attrSheet.key.text.toString(), binding.attrSheet.value.text.toString())
+        binding.addAttrSheet.submit.setOnClickListener {
+            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()){
+                viewModel.addAttr(array, binding.addAttrSheet.key.text.toString(), binding.addAttrSheet.value.text.toString())
             }
         }
     }
@@ -170,7 +182,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
     private fun handleDes(selected: ArrayList<Int>) {
-        binding.attrSheet.title.text = String.format(
+        binding.addAttrSheet.title.text = String.format(
             Locale.getDefault(),
             "%s (%s)",
             requireContext().resources.getString(R.string.selected),
@@ -194,9 +206,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private fun handleStyleSheet(p2: Int) {
         sheetBehavior = BottomSheetBehavior.from(binding.sheet.bottomSheet)
     }
+    private fun handleAddAttrSheet() {
+        sheetBehavior = BottomSheetBehavior.from(binding.addAttrSheet.bottomSheet)
+    }
     private fun handleAttrSheet() {
         sheetBehavior = BottomSheetBehavior.from(binding.attrSheet.bottomSheet)
     }
-
 
 }
