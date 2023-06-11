@@ -10,7 +10,7 @@ import com.example.stylesenseiadmin.model.ItemResults
 import com.example.stylesenseiadmin.util.ApiHelper
 
 class ItemsViewModel : ViewModel() {
-    var apiHelper = ApiHelper()
+    var apiHelper:ApiHelper? = ApiHelper()
     val _results = MutableLiveData<List<ItemResults>>()
     val results: LiveData<List<ItemResults>>
         get() = _results
@@ -22,16 +22,31 @@ class ItemsViewModel : ViewModel() {
     val _addAttrResult = MutableLiveData<String>()
     val addAttrResult: LiveData<String>
         get() = _addAttrResult
+
+    val _attrs = MutableLiveData<Map<String, List<String>>>()
+    val attrs: LiveData<Map<String, List<String>>>
+        get() = _attrs
+
     init {
         getOnlineItems()
+        getAllAttrs()
+    }
+
+    private fun getAllAttrs() {
+        apiHelper?.getAttr(_attrs)
     }
 
     fun getOnlineItems() {
-        apiHelper.getItem(_results, _fail)
+        apiHelper?.getItem(_results, _fail)
     }
 
     fun addAttr(ids:ArrayList<Int>, key:String, value:String){
-        apiHelper.addAttr(_addAttrResult, key, value, ids)
+        apiHelper?.addAttr(_addAttrResult, key, value, ids)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        apiHelper = null
     }
 
     companion object{

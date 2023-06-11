@@ -51,7 +51,6 @@ class ApiHelper {
             put("product_ids", jsonArray)
         }
         val jsonString = jsonObject.toString()
-        Log.i("AJC", jsonString)
         val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaType())
 
         val deferredList = OnlineItem.retrofitService.addAttr(requestBody)
@@ -63,6 +62,20 @@ class ApiHelper {
                 }
             } catch (e: Exception) {
                 addAttrResult.value = e.message.toString()
+            }
+        }
+    }
+
+    fun getAttr(_attrs: MutableLiveData<Map<String, List<String>>>) {
+        val deferredList = OnlineItem.retrofitService.getAttrs()
+        uiScope.launch {
+            try {
+                val result = deferredList.await()
+                if (result.isNotEmpty()) {
+                    _attrs.value = result
+                }
+            }catch (e:Exception){
+                Log.i("AJC", e.message.toString())
             }
         }
     }

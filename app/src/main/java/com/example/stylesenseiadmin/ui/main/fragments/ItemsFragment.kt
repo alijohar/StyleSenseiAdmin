@@ -2,12 +2,12 @@ package com.example.stylesenseiadmin.ui.main.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.adapter.ItemCustomView
@@ -24,8 +24,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private lateinit var viewModel: ItemsViewModel
     private lateinit var binding: FragmentItemsBinding
     private lateinit var itemResults: List<ItemResults>
+    private var attrs: Map<String, List<String>>? = null
     private var sheetBehavior: BottomSheetBehavior<*>? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +40,14 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
         viewModel.fail.observe(viewLifecycleOwner) {
             handleFail(it)
+        }
+        viewModel.attrs.observe(viewLifecycleOwner) {
+            if (it != null){
+                binding.filter.visibility = View.VISIBLE
+                attrs = it
+            }else {
+                binding.filter.visibility = View.GONE
+            }
         }
         viewModel.addAttrResult.observe(viewLifecycleOwner) {
             binding.attrSheet.sendingCountainer.visibility = View.VISIBLE
@@ -56,6 +64,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             openAttrSheet(selected)
 
         }
+
+
         return binding.root
     }
 
@@ -187,5 +197,6 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private fun handleAttrSheet() {
         sheetBehavior = BottomSheetBehavior.from(binding.attrSheet.bottomSheet)
     }
+
 
 }

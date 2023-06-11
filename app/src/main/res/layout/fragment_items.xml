@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.fragments.ItemsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="@dimen/normal_magrin"
+            android:src="@drawable/ic_filter" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/progress"
@@ -12,45 +28,47 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_loading"
-        android:layout_width="match_parent"
-        app:lottie_loop="true"
-        android:layout_gravity="center"
-        app:lottie_autoPlay="true"
-        android:layout_height="wrap_content"
-        app:lottie_fileName="load.json"
-    />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="load.json"
+            app:lottie_loop="true" />
+
         <TextView
             android:id="@+id/title_loading"
             android:layout_width="match_parent"
-            android:padding="@dimen/normal_magrin"
-            android:textColor="@color/black"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/normal_magrin"
             android:text="@string/wait"
-            android:gravity="center"/>
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/retry"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:text="@string/retry"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:background="@android:color/transparent"
-            android:layout_gravity="center"
-            android:text="@string/retry"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <GridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_height="match_parent"
-        android:verticalSpacing="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="?actionBarSize"
+        android:layout_marginRight="16dp"
         android:horizontalSpacing="8dp"
-        android:numColumns="@integer/num_columns" />
+        android:numColumns="@integer/num_columns"
+        android:verticalSpacing="16dp" />
 
     <View
         android:id="@+id/bg"
@@ -60,19 +78,22 @@
         android:focusable="true"
         android:visibility="gone" />
 
-    <include layout="@layout/bottom_sheet"
-        android:id="@+id/sheet"/>
-    <include layout="@layout/attr_sheet"
-        android:id="@+id/attr_sheet"/>
+    <include
+        android:id="@+id/sheet"
+        layout="@layout/bottom_sheet" />
+
+    <include
+        android:id="@+id/attr_sheet"
+        layout="@layout/attr_sheet" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
         android:id="@+id/add_attr"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/normal_magrin"
         android:src="@drawable/round_add_24"
         android:visibility="gone"
         app:backgroundTint="@color/white"
-        app:elevation="0dp"
-        />
+        app:elevation="0dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
