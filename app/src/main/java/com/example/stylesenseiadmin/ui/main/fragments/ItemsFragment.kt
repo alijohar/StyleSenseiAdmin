@@ -6,7 +6,9 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.AdapterView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stylesenseiadmin.R
+import com.example.stylesenseiadmin.adapter.AttrItemAdapter
 import com.example.stylesenseiadmin.adapter.ItemCustomView
 import com.example.stylesenseiadmin.adapter.ItemAdapter
 import com.example.stylesenseiadmin.adapter.ItemDetailAdapter
@@ -41,10 +43,10 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         viewModel.attrs.observe(viewLifecycleOwner) {
             if (it != null){
                 binding.filter.visibility = View.VISIBLE
-                binding.filter.setOnClickListener {
-                    openAttrsSheet()
-                }
                 attrs = it
+                binding.filter.setOnClickListener {
+                    openAttrsSheet(attrs!!)
+                }
             }else {
                 binding.filter.visibility = View.GONE
             }
@@ -62,14 +64,13 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.addAttr.setOnClickListener {
             val selected = adapter.selectedPositions
             openAddAttrSheet(selected)
-
         }
 
 
         return binding.root
     }
 
-    private fun openAttrsSheet() {
+    private fun openAttrsSheet(attrs: Map<String, List<String>>) {
         handleAttrSheet()
         binding.bg.visibility = View.VISIBLE;
         binding.bg.alpha = 0.3F
@@ -79,6 +80,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             binding.bg.visibility = View.GONE
         }
+
+        val adapter = AttrItemAdapter(attrs)
+        binding.attrSheet.recylcerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.attrSheet.recylcerView.adapter = adapter
+
     }
 
     private fun openAddAttrSheet(selected: ArrayList<Int>) {
