@@ -12,6 +12,14 @@
         android:layout_gravity="top"
         android:orientation="horizontal">
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:visibility="gone"
+            android:layout_width="24dp"
+            android:layout_margin="@dimen/normal_magrin"
+            android:layout_height="24dp"
+            android:indeterminateTint="@color/grey"
+            />
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/filter"
             android:layout_width="wrap_content"

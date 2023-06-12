@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.AdapterView
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stylesenseiadmin.R
@@ -33,6 +35,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         viewModel.results.observe(viewLifecycleOwner) {
+            binding.progressBar.visibility = View.VISIBLE
+
             handleGridView(it)
         }
 
@@ -41,6 +45,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         }
         viewModel.attrs.observe(viewLifecycleOwner) {
             if (it != null){
+                binding.progressBar.visibility = View.GONE
                 binding.filter.visibility = View.VISIBLE
                 attrs = it
                 binding.filter.setOnClickListener {
@@ -48,6 +53,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                 }
             }else {
                 binding.filter.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+
             }
         }
         viewModel.addAttrResult.observe(viewLifecycleOwner) {
@@ -73,18 +80,56 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         handleAttrSheet()
         binding.bg.visibility = View.VISIBLE;
         binding.bg.alpha = 0.3F
-        sheetBehavior?.peekHeight = 440
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+
+        binding.attrSheet.close.setOnClickListener {
+            hideSheet()
+        }
+        // Disable scroll down
+        sheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    // Disable scroll-down behavior
+                    sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Optional: handle sliding behavior
+            }
+        })
+
         binding.bg.setOnClickListener {
-            sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-            binding.bg.visibility = View.GONE
+            hideSheet()
         }
         val expandableList: List<ExpandableGroup> = attrs.map { (headers, items) ->
             ExpandableGroup(headers, items)
         }
+
         val adapter = ExpandableListAdapter(expandableList)
+        adapter.setOnChildClickListener(object : ExpandableListAdapter.OnChildClickListener {
+            override fun onChildClick(groupPosition: Int, childPosition: Int) {
+                val group = adapter.getGroup(groupPosition) as ExpandableGroup
+                val child = adapter.getChild(groupPosition, childPosition) as String
+                Toast.makeText(requireContext(), "You select ${group.groupName} and $child", Toast.LENGTH_SHORT).show()
+            }
+        })
+
         binding.attrSheet.expandableListView.setAdapter(adapter)
+        adapter.attachChildClickListener(binding.attrSheet.expandableListView)
+        binding.attrSheet.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                adapter.filter(newText)
+                return true
+            }
+        })
     }
+
+
 
     private fun openAddAttrSheet(selected: ArrayList<Int>) {
         handleAddAttrSheet()
@@ -99,8 +144,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         sheetBehavior?.peekHeight = 440
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         binding.bg.setOnClickListener {
-            sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-            binding.bg.visibility = View.GONE
+            hideSheet()
         }
 
         binding.addAttrSheet.submit.setOnClickListener {
@@ -174,10 +218,14 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         sheetBehavior?.peekHeight = 440
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         binding.bg.setOnClickListener {
-            sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-            binding.bg.visibility = View.GONE
+            hideSheet()
         }
 
+    }
+
+    private fun hideSheet() {
+        sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.bg.visibility = View.GONE
     }
 
     private fun handleRecyclerView(item: ItemResults) {

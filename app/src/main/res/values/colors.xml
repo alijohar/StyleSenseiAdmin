@@ -9,5 +9,6 @@
     <color name="black_overlay">#33000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#404040</color>
+    <color name="light_grey">#7C7C7C</color>
     <color name="red">#CC0C0C</color>
 </resources>
