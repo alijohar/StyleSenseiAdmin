@@ -8,11 +8,10 @@ import android.widget.AdapterView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stylesenseiadmin.R
-import com.example.stylesenseiadmin.adapter.AttrItemAdapter
+import com.example.stylesenseiadmin.adapter.*
 import com.example.stylesenseiadmin.adapter.ItemCustomView
-import com.example.stylesenseiadmin.adapter.ItemAdapter
-import com.example.stylesenseiadmin.adapter.ItemDetailAdapter
 import com.example.stylesenseiadmin.databinding.FragmentItemsBinding
+import com.example.stylesenseiadmin.model.ExpandableGroup
 import com.example.stylesenseiadmin.model.ItemResults
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.util.*
@@ -80,11 +79,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             binding.bg.visibility = View.GONE
         }
-
-        val adapter = AttrItemAdapter(attrs)
-        binding.attrSheet.recylcerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.attrSheet.recylcerView.adapter = adapter
-
+        val expandableList: List<ExpandableGroup> = attrs.map { (headers, items) ->
+            ExpandableGroup(headers, items)
+        }
+        val adapter = ExpandableListAdapter(expandableList)
+        binding.attrSheet.expandableListView.setAdapter(adapter)
     }
 
     private fun openAddAttrSheet(selected: ArrayList<Int>) {

@@ -13,8 +13,8 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recylcerView"
+    <ExpandableListView
+        android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>
