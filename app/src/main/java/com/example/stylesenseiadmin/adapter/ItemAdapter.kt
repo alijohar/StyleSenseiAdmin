@@ -30,4 +30,11 @@ class ItemAdapter(private val context: Context, private val itemResult: ArrayLis
         return customView
     }
 
+    // Function to clear the adapter items
+    fun clear() {
+        itemResult.clear()
+        selectedPositions.clear()
+        notifyDataSetChanged()
+    }
+
 }

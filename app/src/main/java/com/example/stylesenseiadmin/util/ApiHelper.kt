@@ -17,9 +17,18 @@ class ApiHelper {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun getItem(array: MutableLiveData<List<ItemResults>>, fail: MutableLiveData<String>) {
-        val mediaType = "text/plain".toMediaType()
-        val requestBody = "{\n    \"type\": 0,\n    \"limit\": 100\n}".toRequestBody(mediaType)
+    fun getItem(attrsString:String, array: MutableLiveData<List<ItemResults>>, fail: MutableLiveData<String>) {
+
+        Log.i("AJC", "attributes: {$attrsString},")
+        val mediaType = "application/json".toMediaType()
+        val requestBody = """
+        {
+            "attributes": {$attrsString},
+            "limit": 100,
+            "offset": 0
+        }
+    """.trimIndent().toRequestBody(mediaType)
+
         val deferredList = OnlineItem.retrofitService.getItem(requestBody)
         uiScope.launch {
             try {

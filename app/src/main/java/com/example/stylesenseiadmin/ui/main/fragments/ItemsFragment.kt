@@ -2,6 +2,7 @@ package com.example.stylesenseiadmin.ui.main.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.AdapterView
@@ -26,6 +27,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private lateinit var itemResults: List<ItemResults>
     private var attrs: Map<String, List<String>>? = null
     private var sheetBehavior: BottomSheetBehavior<*>? = null
+    var map: MutableMap<String, MutableList<String>> = mutableMapOf()
+    var attrsString = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,8 +38,9 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         viewModel.results.observe(viewLifecycleOwner) {
-            binding.progressBar.visibility = View.VISIBLE
-
+            if (binding.filter.visibility == View.GONE) {
+                binding.progressBar.visibility = View.VISIBLE
+            }
             handleGridView(it)
         }
 
@@ -44,14 +48,14 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             handleFail(it)
         }
         viewModel.attrs.observe(viewLifecycleOwner) {
-            if (it != null){
+            if (it != null) {
                 binding.progressBar.visibility = View.GONE
                 binding.filter.visibility = View.VISIBLE
                 attrs = it
                 binding.filter.setOnClickListener {
                     openAttrsSheet(attrs!!)
                 }
-            }else {
+            } else {
                 binding.filter.visibility = View.GONE
                 binding.progressBar.visibility = View.VISIBLE
 
@@ -91,6 +95,22 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     // Disable scroll-down behavior
                     sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                }else if (newState == BottomSheetBehavior.STATE_HIDDEN){
+                    attrsString = ""
+                    for ((groupName, children) in map) {
+                        for (child in children) {
+                            attrsString = "$attrsString\"$groupName\":\"$child\","
+                        }
+                    }
+                    Log.i("AJC", attrsString)
+
+                    if (attrsString.isNotEmpty() && attrsString.last() == ',') {
+                        attrsString = attrsString.dropLast(1)
+                    }
+                    binding.progress.visibility = View.VISIBLE
+                    clearGridViewItems()
+                    viewModel.getOnlineItems(attrsString)
+                    map.clear()
                 }
             }
 
@@ -111,13 +131,22 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             override fun onChildClick(groupPosition: Int, childPosition: Int) {
                 val group = adapter.getGroup(groupPosition) as ExpandableGroup
                 val child = adapter.getChild(groupPosition, childPosition) as String
-                Toast.makeText(requireContext(), "You select ${group.groupName} and $child", Toast.LENGTH_SHORT).show()
+                val existingChildren = map[group.groupName]
+                if (existingChildren != null) {
+                    existingChildren.add(child)
+                } else {
+                    map[group.groupName] = mutableListOf(child)
+                }
+
             }
         })
 
+
+
         binding.attrSheet.expandableListView.setAdapter(adapter)
         adapter.attachChildClickListener(binding.attrSheet.expandableListView)
-        binding.attrSheet.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.attrSheet.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 return false
             }
@@ -130,11 +159,10 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
 
-
     private fun openAddAttrSheet(selected: ArrayList<Int>) {
         handleAddAttrSheet()
         val array = ArrayList<Int>()
-        for (item in selected){
+        for (item in selected) {
             array.add(itemResults[item].id)
         }
         handleDes(array)
@@ -148,8 +176,12 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         }
 
         binding.addAttrSheet.submit.setOnClickListener {
-            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()){
-                viewModel.addAttr(array, binding.addAttrSheet.key.text.toString(), binding.addAttrSheet.value.text.toString())
+            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()) {
+                viewModel.addAttr(
+                    array,
+                    binding.addAttrSheet.key.text.toString(),
+                    binding.addAttrSheet.value.text.toString()
+                )
             }
         }
     }
@@ -172,6 +204,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
     private fun handleGridView(it: List<ItemResults>?) {
+        Log.i("AJC", it?.size.toString())
         if (it != null) {
             this.itemResults = it
         }
@@ -190,9 +223,9 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                     adapter.selectedPositions.add(position)
                     (view as ItemCustomView).display(true)
                 }
-                if (adapter.selectedPositions.isNotEmpty()){
+                if (adapter.selectedPositions.isNotEmpty()) {
                     binding.addAttr.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.addAttr.visibility = View.GONE
                 }
 
@@ -200,7 +233,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
     }
-
+    // Function to clear items of GridView
+    private fun clearGridViewItems() {
+        adapter.clear()
+        adapter.notifyDataSetChanged()
+    }
     override fun onItemLongClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long): Boolean {
         openSheet(p2)
         return true
@@ -224,6 +261,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
     private fun hideSheet() {
+
         sheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         binding.bg.visibility = View.GONE
     }
@@ -251,7 +289,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             item.name,
             item.id
         )
-        binding.sheet.type.text =  if (item.type == 1) "shoes" else "clothes"
+        binding.sheet.type.text = if (item.type == 1) "shoes" else "clothes"
         binding.sheet.price.text = item.price
         binding.sheet.attributeCount.text = item.product_attributes.size.toString()
     }
@@ -259,9 +297,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private fun handleStyleSheet(p2: Int) {
         sheetBehavior = BottomSheetBehavior.from(binding.sheet.bottomSheet)
     }
+
     private fun handleAddAttrSheet() {
         sheetBehavior = BottomSheetBehavior.from(binding.addAttrSheet.bottomSheet)
     }
+
     private fun handleAttrSheet() {
         sheetBehavior = BottomSheetBehavior.from(binding.attrSheet.bottomSheet)
     }

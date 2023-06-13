@@ -36,8 +36,8 @@ class ItemsViewModel : ViewModel() {
         apiHelper?.getAttr(_attrs)
     }
 
-    fun getOnlineItems() {
-        apiHelper?.getItem(_results, _fail)
+    fun getOnlineItems(attrsString:String = "") {
+        apiHelper?.getItem(attrsString, _results, _fail)
     }
 
     fun addAttr(ids:ArrayList<Int>, key:String, value:String){
