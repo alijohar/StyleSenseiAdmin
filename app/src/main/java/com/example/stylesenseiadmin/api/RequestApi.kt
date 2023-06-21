@@ -1,5 +1,6 @@
 package com.example.stylesenseiadmin.api
 
+import com.example.stylesenseiadmin.model.ClothingResponse
 import com.example.stylesenseiadmin.model.ItemModel
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
@@ -17,4 +18,7 @@ interface RequestApi {
 
     @GET("/api/v1/product/get-unique-attrs")
     fun getAttrs(): Deferred<Map<String, List<String>>>
+
+    @GET("")
+    fun getClothingData(): Deferred<ClothingResponse>
 }

@@ -44,6 +44,21 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             handleGridView(it)
         }
 
+
+        viewModel.localResults.observe(viewLifecycleOwner) {
+            for (item in it.clothes) {
+                item.attrs.forEachIndexed { index, map ->
+                    map.forEach { (key, values) ->
+                        values.forEach { value ->
+                            println("${item.type} / $key: $value")
+                        }
+                    }
+                }
+
+            }
+        }
+
+
         viewModel.fail.observe(viewLifecycleOwner) {
             handleFail(it)
         }
@@ -95,7 +110,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     // Disable scroll-down behavior
                     sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-                }else if (newState == BottomSheetBehavior.STATE_HIDDEN){
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     attrsString = ""
                     for ((groupName, children) in map) {
                         for (child in children) {
@@ -160,6 +175,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
     private fun openAddAttrSheet(selected: ArrayList<Int>) {
+        viewModel.getAttrsLocally(requireContext())
         handleAddAttrSheet()
         val array = ArrayList<Int>()
         for (item in selected) {
@@ -233,11 +249,13 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
     }
+
     // Function to clear items of GridView
     private fun clearGridViewItems() {
         adapter.clear()
         adapter.notifyDataSetChanged()
     }
+
     override fun onItemLongClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long): Boolean {
         openSheet(p2)
         return true
@@ -292,6 +310,18 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.sheet.type.text = if (item.type == 1) "shoes" else "clothes"
         binding.sheet.price.text = item.price
         binding.sheet.attributeCount.text = item.product_attributes.size.toString()
+        var attrs = ""
+        for (attr in item.product_attributes){
+            if ((attr.attr_name != "images") && (attr.attr_name != "shortDescription") && (attr.attr_name != "Price")
+                && (attr.attr_name != "NonReturnable") && (attr.attr_name != "SKU") && (attr.attr_name != "supplierStyleNo")
+                && (attr.attr_name != "FreeDelivery")  && (attr.attr_name != "SpecialPrice") && (attr.attr_name != "LikesCount")
+                && (attr.attr_name != "PercentageOff")  && (attr.attr_name != "sku")  && (attr.attr_name != "Discountable")
+                && (attr.attr_name != "Name") && (attr.attr_name != "Brand key")){
+                attrs = "$attrs  ${attr.attr_name}  :  ${attr.attr_value} \n \n"
+            }
+        }
+        binding.sheet.attrs.text = attrs
+
     }
 
     private fun handleStyleSheet(p2: Int) {

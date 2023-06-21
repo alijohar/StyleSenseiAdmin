@@ -1,9 +1,12 @@
 package com.example.stylesenseiadmin.util
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.stylesenseiadmin.api.OnlineItem
+import com.example.stylesenseiadmin.model.ClothingResponse
 import com.example.stylesenseiadmin.model.ItemResults
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,7 +20,11 @@ class ApiHelper {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    fun getItem(attrsString:String, array: MutableLiveData<List<ItemResults>>, fail: MutableLiveData<String>) {
+    fun getItem(
+        attrsString: String,
+        array: MutableLiveData<List<ItemResults>>,
+        fail: MutableLiveData<String>
+    ) {
 
         Log.i("AJC", "attributes: {$attrsString},")
         val mediaType = "application/json".toMediaType()
@@ -46,7 +53,12 @@ class ApiHelper {
     }
 
 
-    fun addAttr(addAttrResult: MutableLiveData<String>, key: String, value: String, ids: List<Int>) {
+    fun addAttr(
+        addAttrResult: MutableLiveData<String>,
+        key: String,
+        value: String,
+        ids: List<Int>
+    ) {
         val jsonArray = JSONArray().apply {
             for (id in ids) {
                 put(id)
@@ -83,9 +95,19 @@ class ApiHelper {
                 if (result.isNotEmpty()) {
                     _attrs.value = result
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.i("AJC", e.message.toString())
             }
+        }
+    }
+
+    fun getAttrLocally(_attrs: MutableLiveData<ClothingResponse>, context: Context) {
+        uiScope.launch {
+            val jsonString = context.assets.open("clothing_data.json").bufferedReader().use {
+                it.readText()
+            }
+
+            _attrs.value = Gson().fromJson(jsonString, ClothingResponse::class.java)
         }
     }
 }
