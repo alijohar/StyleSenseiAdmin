@@ -54,7 +54,7 @@ class ItemsViewModel : ViewModel() {
         @BindingAdapter("loadImage")
         fun setImage(image: ImageView, item: ItemResults){
             Glide.with(image.context)
-                .load(item.images.split(",").first())
+                .load(item.pictures.split(",").first())
                 .into(image)
 
         }

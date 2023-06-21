@@ -23,7 +23,7 @@ internal class ItemCustomView(context: Context?) : FrameLayout(context!!) {
 
     fun display(src: ItemResults, isSelected: Boolean) {
         textView.text = src.name
-        Glide.with(context).load(src.images.split(",").first()).into(imageView)
+        Glide.with(context).load(src.pictures.split(",").first()).into(imageView)
         if (src.added_attr_count>0){
             badge.visibility = View.VISIBLE
             badgeCount.text = src.added_attr_count.toString()

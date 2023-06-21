@@ -267,7 +267,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
     private fun handleRecyclerView(item: ItemResults) {
-        val imageArray = item.images.split(",")
+        val imageArray = item.pictures.split(",")
         val gridAdapter = ItemDetailAdapter(requireContext(), imageArray as ArrayList<String>)
         binding.sheet.gridView.adapter = gridAdapter
     }
