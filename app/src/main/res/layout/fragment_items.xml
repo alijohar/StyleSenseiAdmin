@@ -28,8 +28,27 @@
             android:backgroundTint="@android:color/transparent"
             android:padding="@dimen/normal_magrin"
             android:src="@drawable/ic_filter" />
-    </LinearLayout>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/group_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </HorizontalScrollView>
+    </LinearLayout>
+    <Button
+        android:id="@+id/retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:text="@string/retry"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:visibility="gone" />
     <LinearLayout
         android:id="@+id/progress"
         android:layout_width="match_parent"
@@ -57,16 +76,7 @@
             android:text="@string/wait"
             android:textColor="@color/black" />
 
-        <Button
-            android:id="@+id/retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:text="@string/retry"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:visibility="gone" />
+
     </LinearLayout>
 
     <GridView

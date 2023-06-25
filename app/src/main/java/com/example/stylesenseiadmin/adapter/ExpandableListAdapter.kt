@@ -132,6 +132,8 @@ class ExpandableListAdapter(private val expandableList: List<ExpandableGroup>) :
         return 1
     }
 
+
+
     override fun getChildType(groupPosition: Int, childPosition: Int): Int {
         return 0
     }
@@ -141,8 +143,13 @@ class ExpandableListAdapter(private val expandableList: List<ExpandableGroup>) :
     }
 
     fun filter(query: String) {
-        val filteredList = expandableList.filter { group ->
-            group.groupName.contains(query, ignoreCase = true)
+        val filteredList = expandableList.map { group ->
+            val filteredChildren = group.children.filter { child ->
+                child.contains(query, ignoreCase = true)
+            }
+            ExpandableGroup(group.groupName, filteredChildren)
+        }.filter { group ->
+            group.children.isNotEmpty()
         }
         filteredExpandableList = filteredList
         notifyDataSetChanged()

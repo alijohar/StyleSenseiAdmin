@@ -1,24 +1,22 @@
 package com.example.stylesenseiadmin.ui.main.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.AdapterView
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.adapter.*
-import com.example.stylesenseiadmin.adapter.ItemCustomView
 import com.example.stylesenseiadmin.databinding.FragmentItemsBinding
 import com.example.stylesenseiadmin.model.ExpandableGroup
 import com.example.stylesenseiadmin.model.ItemResults
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private lateinit var adapter: ItemAdapter
@@ -41,6 +39,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             if (binding.filter.visibility == View.GONE) {
                 binding.progressBar.visibility = View.VISIBLE
             }
+
             handleGridView(it)
         }
 
@@ -84,7 +83,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             retry()
         }
 
-
+        viewModel.getOnlineItems(resetAttrString())
+        addChipsView()
 
         binding.addAttr.setOnClickListener {
             val selected = adapter.selectedPositions
@@ -93,6 +93,20 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         return binding.root
+    }
+
+    private fun addChipsView() {
+        binding.groupChips.removeAllViews()
+        for (chipString in attrsString.split(",")) {
+            if (chipString.isNotEmpty()) {
+                val chip = Chip(requireContext())
+                chip.text = chipString.replace("\"", "")
+
+                // Optionally, you can customize the appearance of the Chip here
+                // by using various methods such as `setChipBackgroundColor`, `setChipIcon`, etc.
+                binding.groupChips.addView(chip)
+            }
+        }
     }
 
     private fun openAttrsSheet(attrs: Map<String, List<String>>) {
@@ -111,17 +125,24 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                     // Disable scroll-down behavior
                     sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    attrsString = ""
+                    if (attrsString.contains("\"")){
+                        attrsString = "$attrsString,"
+                    }else {
+                        resetAttrString()
+                    }
                     for ((groupName, children) in map) {
                         for (child in children) {
-                            attrsString = "$attrsString\"$groupName\":\"$child\","
+                            if (!attrsString.contains(child)) {
+                                attrsString = "$attrsString\"$groupName\":\"$child\","
+                            }
                         }
                     }
-                    Log.i("AJC", attrsString)
-
                     if (attrsString.isNotEmpty() && attrsString.last() == ',') {
                         attrsString = attrsString.dropLast(1)
                     }
+
+                    addChipsView()
+
                     binding.progress.visibility = View.VISIBLE
                     clearGridViewItems()
                     viewModel.getOnlineItems(attrsString)
@@ -216,7 +237,14 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.titleLoading.text = requireContext().resources.getString(R.string.wait)
         binding.lottieLoading.visibility = View.VISIBLE
         binding.titleLoading.setTextColor(blackColor)
-        viewModel.getOnlineItems()
+        viewModel.getOnlineItems(resetAttrString())
+        addChipsView()
+        binding.retry.visibility = View.GONE
+    }
+
+    private fun resetAttrString(): String {
+        attrsString = "\"AgeGroup\":\"adult\""
+        return attrsString
     }
 
     private fun handleGridView(it: List<ItemResults>?) {

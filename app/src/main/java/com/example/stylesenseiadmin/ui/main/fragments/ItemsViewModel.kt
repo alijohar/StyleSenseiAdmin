@@ -34,7 +34,6 @@ class ItemsViewModel : ViewModel() {
         get() = _attrs
 
     init {
-        getOnlineItems()
         getAllAttrs()
     }
 

@@ -44,7 +44,7 @@ class ApiHelper {
                 if (result.isNotEmpty()) {
                     array.value = result
                 } else {
-                    // Handle the situation where 'result' or 'resource' is null
+                    fail.value = "Count is zero! call Alireza fallah :) "
                 }
             } catch (e: Exception) {
                 fail.value = e.message.toString()
