@@ -45,7 +45,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         viewModel.localResults.observe(viewLifecycleOwner) {
-            val adapter = ClothingAdapter(it.clothes)
+            val adapter = ClothingAdapter(requireContext(), it.clothes[0].attrs)
             binding.addAttrSheet.expandableListView.setAdapter(adapter)
 
 //            for (item in it.clothes) {

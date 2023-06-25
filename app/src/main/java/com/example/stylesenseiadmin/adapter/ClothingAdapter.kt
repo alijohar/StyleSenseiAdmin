@@ -8,21 +8,27 @@ import android.widget.TextView
 import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.model.Clothing
 
-class ClothingAdapter(private val clothingList: List<Clothing>) : BaseExpandableListAdapter() {
+import android.content.Context
+
+class ClothingAdapter(private val context: Context, private val attrs: List<Map<String, List<String>>>) :
+    BaseExpandableListAdapter() {
+
     override fun getGroupCount(): Int {
-        return clothingList.size
+        return attrs.size
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        return clothingList[groupPosition].attrs.size
+        return attrs[groupPosition].size
     }
 
     override fun getGroup(groupPosition: Int): Any {
-        return clothingList[groupPosition]
+        return attrs[groupPosition]
     }
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any {
-        return clothingList[groupPosition].attrs[childPosition]
+        val attributeMap = attrs[groupPosition]
+        val attributeKey = attributeMap.keys.toTypedArray()[childPosition]
+        return attributeMap[attributeKey]!!
     }
 
     override fun getGroupId(groupPosition: Int): Long {
@@ -37,25 +43,19 @@ class ClothingAdapter(private val clothingList: List<Clothing>) : BaseExpandable
         return true
     }
 
-    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
-        return true
-    }
+    override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
+        var convertView = convertView
+        if (convertView == null) {
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            convertView = inflater.inflate(R.layout.group_item_layout, null)
+        }
 
-    override fun getGroupView(
-        groupPosition: Int,
-        isExpanded: Boolean,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
-        // Inflate the group item layout
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.group_item_layout, parent, false)
+        val groupTextView: TextView = convertView!!.findViewById(R.id.typeTextView)
+        val attributeMap = attrs[groupPosition]
+        val attributeKey = attributeMap.keys.toTypedArray()[0]
+        groupTextView.text = attributeKey
 
-        // Set the type value for the group item
-        val typeTextView = view.findViewById<TextView>(R.id.typeTextView)
-        typeTextView.text = clothingList[groupPosition].type
-
-        return view
+        return convertView
     }
 
     override fun getChildView(
@@ -63,18 +63,33 @@ class ClothingAdapter(private val clothingList: List<Clothing>) : BaseExpandable
         childPosition: Int,
         isLastChild: Boolean,
         convertView: View?,
-        parent: ViewGroup
+        parent: ViewGroup?
     ): View {
-        // Inflate the child item layout
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.child_item_layout, parent, false)
+        var convertView = convertView
+        if (convertView == null) {
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            convertView = inflater.inflate(R.layout.child_item_layout, null)
+        }
 
-        // Set the attrs values for the child item
-        val attrsTextView = view.findViewById<TextView>(R.id.attrsTextView)
-        val attrsMap = clothingList[groupPosition].attrs[childPosition]
-        val attrsString = attrsMap.values.flatten().joinToString(", ")
-        attrsTextView.text = attrsString
+        val childTextView: TextView = convertView!!.findViewById(R.id.attrsTextView)
+        val attributeMap = attrs[groupPosition]
+        val attributeKey = attributeMap.keys.toTypedArray()[childPosition]
+        val attributeValues = attributeMap[attributeKey]!!
 
-        return view
+        val valuesStringBuilder = StringBuilder()
+        for (value in attributeValues) {
+            valuesStringBuilder.append(value).append(", ")
+        }
+        valuesStringBuilder.delete(valuesStringBuilder.length - 2, valuesStringBuilder.length)
+
+        childTextView.text = valuesStringBuilder.toString()
+
+        return convertView
+    }
+
+    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
+        return true
     }
 }
+
+
