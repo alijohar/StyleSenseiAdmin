@@ -1,14 +1,15 @@
 package com.example.stylesenseiadmin.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.stylesenseiadmin.R
-import com.example.stylesenseiadmin.model.Clothing
 
-import android.content.Context
 
 class ClothingAdapter(private val context: Context, private val attrs: List<Map<String, List<String>>>) :
     BaseExpandableListAdapter() {
@@ -71,19 +72,15 @@ class ClothingAdapter(private val context: Context, private val attrs: List<Map<
             convertView = inflater.inflate(R.layout.child_item_layout, null)
         }
 
-        val childTextView: TextView = convertView!!.findViewById(R.id.attrsTextView)
+        val recyclerView: RecyclerView = convertView!!.findViewById(R.id.recyclerView)
         val attributeMap = attrs[groupPosition]
         val attributeKey = attributeMap.keys.toTypedArray()[childPosition]
         val attributeValues = attributeMap[attributeKey]!!
-
-        val valuesStringBuilder = StringBuilder()
-        for (value in attributeValues) {
-            valuesStringBuilder.append(value).append(", ")
-        }
-        valuesStringBuilder.delete(valuesStringBuilder.length - 2, valuesStringBuilder.length)
-
-        childTextView.text = valuesStringBuilder.toString()
-
+        val adapter = AttrsAdapter(attributeValues)
+        recyclerView.adapter = adapter
+        val linearLayoutManager = LinearLayoutManager(context)
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        recyclerView.layoutManager = linearLayoutManager
         return convertView
     }
 

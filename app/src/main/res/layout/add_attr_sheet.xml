@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/rounded_edge"
     android:elevation="16dp"
     android:orientation="vertical"
@@ -28,6 +28,7 @@
         android:layout_marginTop="@dimen/normal_magrin"
         android:layout_marginBottom="@dimen/normal_magrin"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -57,51 +58,65 @@
 
         <TextView
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:text="or Select from attrs"
             android:padding="@dimen/normal_magrin"
             />
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/group_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </HorizontalScrollView>
         <ExpandableListView
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/sending_countainer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/white"-->
+<!--        android:orientation="vertical"-->
+<!--        >-->
+
+
+<!--            <com.airbnb.lottie.LottieAnimationView-->
+<!--                android:id="@+id/lottie_done"-->
+<!--                android:layout_width="44dp"-->
+<!--                app:lottie_loop="false"-->
+<!--                android:layout_gravity="center"-->
+<!--                app:lottie_autoPlay="true"-->
+<!--                android:layout_height="44dp"-->
+<!--                app:lottie_fileName="done.json"-->
+<!--                />-->
+<!--            <TextView-->
+<!--                android:id="@+id/done_title"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:padding="@dimen/normal_magrin"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/wait"-->
+<!--                android:gravity="center"/>-->
+
+<!--    </LinearLayout>-->
+
     <Button
         android:id="@+id/submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/submit"
+        android:layout_gravity="bottom|right"
         android:backgroundTint="@color/black"
         android:textColor="@color/white"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/sending_countainer"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        >
-
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_done"
-                android:layout_width="44dp"
-                app:lottie_loop="false"
-                android:layout_gravity="center"
-                app:lottie_autoPlay="true"
-                android:layout_height="44dp"
-                app:lottie_fileName="done.json"
-                />
-            <TextView
-                android:id="@+id/done_title"
-                android:layout_width="match_parent"
-                android:padding="@dimen/normal_magrin"
-                android:textColor="@color/black"
-                android:layout_height="wrap_content"
-                android:text="@string/wait"
-                android:gravity="center"/>
-
-    </LinearLayout>
 </FrameLayout>

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.stylesenseiadmin.R
 import com.example.stylesenseiadmin.adapter.*
 import com.example.stylesenseiadmin.databinding.FragmentItemsBinding
+import com.example.stylesenseiadmin.model.Clothing
 import com.example.stylesenseiadmin.model.ExpandableGroup
 import com.example.stylesenseiadmin.model.ItemResults
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -45,8 +46,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         viewModel.localResults.observe(viewLifecycleOwner) {
-            val adapter = ClothingAdapter(requireContext(), it.clothes[0].attrs)
-            binding.addAttrSheet.expandableListView.setAdapter(adapter)
+            addAttrChipsView(it.clothes)
+
 
 //            for (item in it.clothes) {
 //                item.attrs.forEachIndexed { index, map ->
@@ -79,8 +80,8 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
             }
         }
         viewModel.addAttrResult.observe(viewLifecycleOwner) {
-            binding.addAttrSheet.sendingCountainer.visibility = View.VISIBLE
-            binding.addAttrSheet.doneTitle.text = it
+//            binding.addAttrSheet.sendingCountainer.visibility = View.VISIBLE
+//            binding.addAttrSheet.doneTitle.text = it
         }
         binding.retry.setOnClickListener {
             retry()
@@ -92,11 +93,38 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.addAttr.setOnClickListener {
             val selected = adapter.selectedPositions
             viewModel.getAttrsLocally(requireContext())
-            openAddAttrSheet(selected)
+            openAddAttrSheet()
         }
 
 
         return binding.root
+    }
+
+    private fun addAttrChipsView(clothes: List<Clothing>) {
+        binding.addAttrSheet.groupChips.removeAllViews()
+        for (chipString in clothes) {
+            val chip = Chip(requireContext())
+            chip.text = chipString.type
+
+            // Set the chip's ID or name as the tag
+            chip.tag = chipString.type // or chipString.name, depending on your data structure
+
+            chip.setOnClickListener { clickedChip ->
+                // Handle chip click event here
+                val selectedChipId = clickedChip.tag as String
+                for (item in clothes){
+                    if (item.type == selectedChipId){
+                        val adapter = ClothingAdapter(requireContext(), item.attrs)
+                        binding.addAttrSheet.expandableListView.setAdapter(adapter)
+                    }
+                }
+
+
+            }
+
+            binding.addAttrSheet.groupChips.addView(chip)
+        }
+
     }
 
     private fun addChipsView() {
@@ -129,9 +157,9 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                     // Disable scroll-down behavior
                     sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    if (attrsString.contains("\"")){
+                    if (attrsString.contains("\"")) {
                         attrsString = "$attrsString,"
-                    }else {
+                    } else {
                         resetAttrString()
                     }
                     for ((groupName, children) in map) {
@@ -199,30 +227,39 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     }
 
 
-    private fun openAddAttrSheet(selected: ArrayList<Int>) {
+    private fun openAddAttrSheet() {
         handleAddAttrSheet()
-        val array = ArrayList<Int>()
-        for (item in selected) {
-            array.add(itemResults[item].id)
-        }
-        handleDes(array)
 
         binding.bg.visibility = View.VISIBLE;
         binding.bg.alpha = 0.3F
-        sheetBehavior?.peekHeight = 440
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        // Disable scroll down
+        sheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    // Disable scroll-down behavior
+                    sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Optional: handle sliding behavior
+            }
+        })
+
         binding.bg.setOnClickListener {
             hideSheet()
         }
 
         binding.addAttrSheet.submit.setOnClickListener {
-            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()) {
-                viewModel.addAttr(
-                    array,
-                    binding.addAttrSheet.key.text.toString(),
-                    binding.addAttrSheet.value.text.toString()
-                )
-            }
+            hideSheet()
+//            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()) {
+//                viewModel.addAttr(
+//                    array,
+//                    binding.addAttrSheet.key.text.toString(),
+//                    binding.addAttrSheet.value.text.toString()
+//                )
+//            }
         }
     }
 
@@ -269,11 +306,6 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
                 } else {
                     adapter.selectedPositions.add(position)
                     (view as ItemCustomView).display(true)
-                }
-                if (adapter.selectedPositions.isNotEmpty()) {
-                    binding.addAttr.visibility = View.VISIBLE
-                } else {
-                    binding.addAttr.visibility = View.GONE
                 }
 
             }
@@ -342,12 +374,13 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         binding.sheet.price.text = item.price
         binding.sheet.attributeCount.text = item.product_attributes.size.toString()
         var attrs = ""
-        for (attr in item.product_attributes){
+        for (attr in item.product_attributes) {
             if ((attr.attr_name != "images") && (attr.attr_name != "shortDescription") && (attr.attr_name != "Price")
                 && (attr.attr_name != "NonReturnable") && (attr.attr_name != "SKU") && (attr.attr_name != "supplierStyleNo")
-                && (attr.attr_name != "FreeDelivery")  && (attr.attr_name != "SpecialPrice") && (attr.attr_name != "LikesCount")
-                && (attr.attr_name != "PercentageOff")  && (attr.attr_name != "sku")  && (attr.attr_name != "Discountable")
-                && (attr.attr_name != "Name") && (attr.attr_name != "Brand key")){
+                && (attr.attr_name != "FreeDelivery") && (attr.attr_name != "SpecialPrice") && (attr.attr_name != "LikesCount")
+                && (attr.attr_name != "PercentageOff") && (attr.attr_name != "sku") && (attr.attr_name != "Discountable")
+                && (attr.attr_name != "Name") && (attr.attr_name != "Brand key")
+            ) {
                 attrs = "$attrs  ${attr.attr_name}  :  ${attr.attr_value} \n \n"
             }
         }
