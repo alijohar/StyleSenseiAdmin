@@ -48,6 +48,24 @@
             android:hint="@string/add_value"/>
     </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:alpha="0.3"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="or Select from attrs"
+            android:padding="@dimen/normal_magrin"
+            />
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     <Button
         android:id="@+id/submit"
         android:layout_width="wrap_content"

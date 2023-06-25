@@ -45,16 +45,19 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
         viewModel.localResults.observe(viewLifecycleOwner) {
-            for (item in it.clothes) {
-                item.attrs.forEachIndexed { index, map ->
-                    map.forEach { (key, values) ->
-                        values.forEach { value ->
-                            println("${item.type} / $key: $value")
-                        }
-                    }
-                }
+            val adapter = ClothingAdapter(it.clothes)
+            binding.addAttrSheet.expandableListView.setAdapter(adapter)
 
-            }
+//            for (item in it.clothes) {
+//                item.attrs.forEachIndexed { index, map ->
+//                    map.forEach { (key, values) ->
+//                        values.forEach { value ->
+//                            Log.i("AJC","${item.type} / $key: $value")
+//                        }
+//                    }
+//                }
+//
+//            }
         }
 
 
@@ -88,6 +91,7 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
         binding.addAttr.setOnClickListener {
             val selected = adapter.selectedPositions
+            viewModel.getAttrsLocally(requireContext())
             openAddAttrSheet(selected)
         }
 
@@ -196,7 +200,6 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
 
 
     private fun openAddAttrSheet(selected: ArrayList<Int>) {
-        viewModel.getAttrsLocally(requireContext())
         handleAddAttrSheet()
         val array = ArrayList<Int>()
         for (item in selected) {
