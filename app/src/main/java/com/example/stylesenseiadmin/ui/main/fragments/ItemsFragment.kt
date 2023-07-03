@@ -230,14 +230,16 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
     private fun openAddAttrSheet() {
         handleAddAttrSheet()
 
-        binding.bg.visibility = View.VISIBLE;
-        binding.bg.alpha = 0.3F
+//        binding.bg.visibility = View.VISIBLE;
+//        binding.bg.alpha = 0.3F
+        sheetBehavior?.peekHeight = 340
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         // Disable scroll down
         sheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     // Disable scroll-down behavior
+                    sheetBehavior?.peekHeight = 340
                     sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 }
             }
@@ -248,11 +250,11 @@ class ItemsFragment : Fragment(), AdapterView.OnItemLongClickListener {
         })
 
         binding.bg.setOnClickListener {
-            hideSheet()
+//            hideSheet()
         }
 
         binding.addAttrSheet.submit.setOnClickListener {
-            hideSheet()
+//            hideSheet()
 //            if (binding.addAttrSheet.key.text!!.isNotEmpty() && binding.addAttrSheet.value.text!!.isNotEmpty()) {
 //                viewModel.addAttr(
 //                    array,

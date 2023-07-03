@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="340dp"
     android:background="@drawable/rounded_edge"
     android:elevation="16dp"
     android:orientation="vertical"
@@ -19,6 +19,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/normal_magrin"
         android:layout_marginBottom="@dimen/small_magrin"
         android:text="@string/app_name"
@@ -54,6 +55,7 @@
             android:layout_height="1dp"
             android:background="@color/grey"
             android:alpha="0.3"
+            android:visibility="gone"
             />
 
         <TextView
@@ -114,6 +116,7 @@
     <Button
         android:id="@+id/submit"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:text="@string/submit"
         android:layout_gravity="bottom|right"
